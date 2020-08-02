@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 2795552604348745168}
   - component: {fileID: 2795552604348745169}
   - component: {fileID: 2795552604348745171}
-  m_Layer: 0
+  - component: {fileID: 671630534}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,6 +48,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -94,5 +96,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00df48ac0821d5b4b95a8e07a468a064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  life: 200
   moveSpeed: 10
   Laser: {fileID: 551011218576534780, guid: ab87c7b450f5e1f41a80b06676305fa7, type: 3}
+  shotsFired: 0
+  projectTileSpeed: 20
+  shootTimer: 0.3
+--- !u!58 &671630534
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2795552604348745174}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.495

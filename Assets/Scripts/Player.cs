@@ -1,25 +1,46 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Player Stats")]
+    [SerializeField] int life = 200;
+
+    [Header("Player Movement")]
     [SerializeField] float moveSpeed = 10f;
+
+    [Header("Projectile")]
     [SerializeField] GameObject Laser = default;
+    [SerializeField] int shotsFired = 0;
     [SerializeField] float projectTileSpeed = 20f;
-    [SerializeField] float projectTileFiringPeriod = 0.3f;
+    [SerializeField] float shootTimer = 0.3f;
+
+    [Header("Player SFX")]
+    [SerializeField] AudioClip deathSFX = default;
+    [SerializeField] [Range(0, 1)] float deathSoundVolume = .75f;
+
+    private float shipPadding = 1f;
     private float xMin;
     private float xMax;
     private float yMin;
     private float yMax;
-    private float shipPadding = 1f;
+
     Coroutine firingCorouotine;
+
+    public event EventHandler OnSpacePressed;
 
 
     // Start is called before the first frame update
     void Start()
     {
         SetUpMoveBoundaries();
+        OnSpacePressed += CountShots;
+    }
+
+    private void CountShots(object sender, EventArgs e)
+    {
+        shotsFired++;
     }
 
     // Update is called once per frame
@@ -50,10 +71,35 @@ public class Player : MonoBehaviour
     {
         while (true)
         {
+            OnSpacePressed?.Invoke(this, EventArgs.Empty);
             GameObject laser = Instantiate(Laser, new Vector3(transform.position.x, transform.position.y + .6f, 0), Quaternion.identity);
             laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, projectTileSpeed);
-            yield return new WaitForSeconds(projectTileFiringPeriod);
+            yield return new WaitForSeconds(shootTimer);
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("you called me?");
+        DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>() ?? null;
+        if (damageDealer != null) ProcessHit(damageDealer);
+    }
+
+    private void ProcessHit(DamageDealer damageDealer)
+    {
+        life -= damageDealer.GetDamage();
+        damageDealer.Hit();
+
+        if (life <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
+        AudioSource.PlayClipAtPoint(deathSFX, Camera.main.transform.position, deathSoundVolume);
     }
 
     private void Move()
